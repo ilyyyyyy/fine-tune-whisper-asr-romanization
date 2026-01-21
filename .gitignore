@@ -1,3 +1,16 @@
 /data
+metadata.csv
 /output
+tiny/
+
+/environments
+.venv/
+venv/
 /sample
+
+/OG files
+README.md
+download.sh
+extract.py
+getstat.py
+sample.py
