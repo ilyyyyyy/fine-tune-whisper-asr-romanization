@@ -7,10 +7,14 @@ tiny/
 .venv/
 venv/
 /sample
+.DS_Store
+.idea/
 
 /OG files
-README.md
 download.sh
 extract.py
 getstat.py
 sample.py
+
+misc
+PROJECT_NOTES.md
