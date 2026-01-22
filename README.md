@@ -7,7 +7,7 @@ This project contains scripts to process the Kokoro speech dataset for Japanese 
 2. Run `data_cleaning.py` to produce tokenized, normalized, and romaji txts.
 3. Manually download relevant mp3 files and place them in `tiny/mp3s/`.
 4. Run `convert_mp3s_to_wavs.py` to generate wav files in `tiny/wavs/`.
-5. Run MFA (via Docker) to produce TextGrids in `tiny/timestamps/`.
+5. Run MFA (via Docker) with tokenized kana txts and wav files to produce TextGrids in `tiny/timestamps/`.
 6. Run `splitwavs.py` to produce aligned wav slices in `tiny/slices/`.
 7. Run `make_final_csv.py` to produce `tiny/data.csv` for model training.
     ### Notes
