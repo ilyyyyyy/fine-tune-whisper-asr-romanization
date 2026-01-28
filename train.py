@@ -1,6 +1,6 @@
 import os
 from peft import LoraConfig, get_peft_model
-from transformers import AutoModelForSpeechSeq2Seq, WhisperForConditionalGeneration, Seq2SeqTrainingArguments, TrainerCallback, TrainingArguments, TrainerState, TrainerControl, Seq2SeqTrainer
+from transformers import AutoModelForSpeechSeq2Seq, WhisperForConditionalGeneration, TrainingArguments, TrainerCallback, TrainingArguments, TrainerState, TrainerControl, Seq2SeqTrainer
 from preprocessing import load_and_process_data
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 
@@ -27,7 +27,7 @@ model = get_peft_model(model, config)
 print_trainable_params(full_ft_model, "Full fine-tuning")
 print_trainable_params(model, "PEFT (LoRA)")
 
-training_args = Seq2SeqTrainingArguments(
+training_args = TrainingArguments(
     output_dir="./results/whisper-tiny-romaji",
     per_device_train_batch_size=8,
     gradient_accumulation_steps=1,
