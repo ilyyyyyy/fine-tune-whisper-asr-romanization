@@ -14,7 +14,6 @@ venv/
 download.sh
 extract.py
 getstat.py
-sample.py
 
 misc
 PROJECT_NOTES.md
