@@ -6,8 +6,12 @@ language_abbr = "ja"
 task = "transcribe"
 dataset_name = "tiny/data.csv"
 
-from transformers import AutoFeatureExtractor, AutoTokenizer, AutoProcessor
+"""Imports! """
 from datasets import load_dataset, DatasetDict, Audio
+from transformers import AutoFeatureExtractor, AutoTokenizer, AutoProcessor
+from dataclasses import dataclass
+from typing import Any, Dict, List, Union
+import torch
 
 raw_dataset = load_dataset("csv", data_files=dataset_name)
 
@@ -22,7 +26,7 @@ dataset_dict = DatasetDict({
 })
 dataset_dict = dataset_dict.cast_column("wav_path", Audio())
 
-from transformers import AutoFeatureExtractor, AutoTokenizer, AutoProcessor
+
 feature_extractor = AutoFeatureExtractor.from_pretrained(model_name_or_path)
 tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, language=language, task=task)
 processor = AutoProcessor.from_pretrained(model_name_or_path, language=language, task=task)
@@ -38,11 +42,6 @@ dataset_dict = dataset_dict.map(
     remove_columns=["wav_path", "romaji"],
     num_proc=2
 )
-print(dataset_dict["train"][0].keys())
-
-from dataclasses import dataclass
-from typing import Any, Dict, List, Union
-import torch
 
 @dataclass
 class DataCollatorSpeechSeq2SeqWithPadding:
@@ -68,3 +67,4 @@ class DataCollatorSpeechSeq2SeqWithPadding:
         return batch
 
 data_collator = DataCollatorSpeechSeq2SeqWithPadding(processor=processor)
+
