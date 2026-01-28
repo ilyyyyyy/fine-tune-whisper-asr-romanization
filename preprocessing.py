@@ -13,36 +13,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 import torch
 
-raw_dataset = load_dataset("csv", data_files=dataset_name)
-
-dataset = raw_dataset["train"].shuffle(seed = 15)
-train_test = dataset.train_test_split(test_size=0.2, seed=15)
-test_valid = train_test["test"].train_test_split(test_size=0.5, seed=15)
-
-dataset_dict = DatasetDict({
-    "train": train_test["train"],
-    "validation": test_valid["train"],
-    "test": test_valid["test"],
-})
-dataset_dict = dataset_dict.cast_column("wav_path", Audio())
-
-
-feature_extractor = AutoFeatureExtractor.from_pretrained(model_name_or_path)
-tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, language=language, task=task)
-processor = AutoProcessor.from_pretrained(model_name_or_path, language=language, task=task)
-
-def prepare_dataset(batch):
-    audio = batch["wav_path"]
-    batch["input_features"] = feature_extractor(audio["array"], sampling_rate=audio["sampling_rate"]).input_features[0]
-    batch["labels"] = tokenizer(batch["romaji"]).input_ids
-    return batch
-
-dataset_dict = dataset_dict.map(
-    prepare_dataset,
-    remove_columns=["wav_path", "romaji"],
-    num_proc=2
-)
-
 @dataclass
 class DataCollatorSpeechSeq2SeqWithPadding:
     processor: Any
@@ -66,5 +36,41 @@ class DataCollatorSpeechSeq2SeqWithPadding:
 
         return batch
 
-data_collator = DataCollatorSpeechSeq2SeqWithPadding(processor=processor)
+def load_and_process_data(
+    dataset_path: str,
+    model_name_or_path: str = "openai/whisper-tiny",
+    audio_column: str = "wav_path",
+    transcript_column: str = "romaji",
+    language: str = "Japanese",
+    task: str = "transcribe",
+    seed: int = 15,
+    num_proc: int = 2
+):
+    raw_dataset = load_dataset("csv", data_files=dataset_path)
+    dataset = raw_dataset["train"].shuffle(seed=seed)
+    train_test = dataset.train_test_split(test_size=0.2, seed=seed)
+    test_valid = train_test["test"].train_test_split(test_size=0.5, seed=seed)
+    dataset_dict = DatasetDict({
+        "train": train_test["train"],
+        "validation": test_valid["train"],
+        "test": test_valid["test"],
+    })
+    dataset_dict = dataset_dict.cast_column(audio_column, Audio())
 
+    feature_extractor = AutoFeatureExtractor.from_pretrained(model_name_or_path)
+    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, language=language, task=task)
+    processor = AutoProcessor.from_pretrained(model_name_or_path, language=language, task=task)
+
+    def prepare_dataset(batch):
+        audio = batch[audio_column]
+        batch["input_features"] = feature_extractor(audio["array"], sampling_rate=audio["sampling_rate"]).input_features[0]
+        batch["labels"] = tokenizer(batch[transcript_column]).input_ids
+        return batch
+
+    dataset_dict = dataset_dict.map(
+        prepare_dataset,
+        remove_columns=[audio_column, transcript_column],
+        num_proc=num_proc
+    )
+    data_collator = DataCollatorSpeechSeq2SeqWithPadding(processor=processor)
+    return dataset_dict, processor, data_collator
