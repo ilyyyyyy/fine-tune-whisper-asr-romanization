@@ -12,8 +12,6 @@ venv/
 
 /OG files
 download.sh
-extract.py
-getstat.py
 
 misc
 PROJECT_NOTES.md
