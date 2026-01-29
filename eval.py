@@ -7,7 +7,7 @@ import torch
 import numpy as np
 import gc
 from contextlib import nullcontext
-from peft import LoraConfig, get_peft_model
+from peft import PeftModel
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 if device.type == "cuda":
@@ -19,20 +19,19 @@ else:
 
 dataset_path = "tiny/data.csv"
 model_name_or_path = "openai/whisper-tiny"
+lora_adapter_path = "./results/whisper-tiny-romaji/checkpoint-93/adapter_model"
 
-model = WhisperForConditionalGeneration.from_pretrained(model_name_or_path)
-config = LoraConfig(r=32, lora_alpha=64, target_modules=["q_proj", "v_proj"], lora_dropout=0.05, bias="none")
-model = get_peft_model(model, config)
+base_model = WhisperForConditionalGeneration.from_pretrained(model_name_or_path)
+model = PeftModel.from_pretrained(base_model, lora_adapter_path)
 model.to(device)
+model.eval()
 
 dataset_dict, processor, data_collator = load_and_process_data(dataset_path)
-
 forced_decoder_ids = processor.get_decoder_prompt_ids()
 tokenizer = processor.tokenizer
 
 metric = evaluate.load("wer")
-eval_dataloader = DataLoader(dataset_dict["test"],batch_size=8,collate_fn=data_collator)
-model.eval()
+eval_dataloader = DataLoader(dataset_dict["validation"],batch_size=8,collate_fn=data_collator)
 for step, batch in enumerate(tqdm(eval_dataloader)):
     with autocast:
         with torch.no_grad():
