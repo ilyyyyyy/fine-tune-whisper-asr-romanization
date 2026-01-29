@@ -13,8 +13,11 @@ class DataCollatorSpeechSeq2SeqWithPadding:
         # Pad input_features
         batch = self.processor.feature_extractor.pad(
             [{"input_features": f["input_features"]} for f in features],
-            return_tensors="pt"
+            return_tensors="pt",
+            padding=True,
+            return_attention_mask = True
         )
+        batch = {k: v for k, v in batch.items()}
 
         # Pad labels
         labels_batch = self.processor.tokenizer.pad(

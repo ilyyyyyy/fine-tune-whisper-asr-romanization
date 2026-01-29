@@ -27,7 +27,6 @@ model.to(device)
 model.eval()
 
 dataset_dict, processor, data_collator = load_and_process_data(dataset_path)
-forced_decoder_ids = processor.get_decoder_prompt_ids()
 tokenizer = processor.tokenizer
 
 metric = evaluate.load("wer")
@@ -35,7 +34,7 @@ eval_dataloader = DataLoader(dataset_dict["validation"],batch_size=8,collate_fn=
 for step, batch in enumerate(tqdm(eval_dataloader)):
     with autocast:
         with torch.no_grad():
-            generated_tokens = model.generate(input_features=batch["input_features"].to(device), forced_decoder_ids=forced_decoder_ids, max_new_tokens=255).cpu().numpy()
+            generated_tokens = model.generate(input_features=batch["input_features"].to(device), attention_mask=batch["attention_mask"].to(device), decoder_input_ids=batch["labels"][:, :4].to(device), max_new_tokens=255).cpu().numpy()
             labels = batch["labels"].cpu().numpy()
             labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
             decoded_preds = tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
