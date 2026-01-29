@@ -1,6 +1,6 @@
 import os
 from peft import LoraConfig, get_peft_model
-from transformers import AutoModelForSpeechSeq2Seq, WhisperForConditionalGeneration, TrainingArguments, TrainerCallback, TrainingArguments, TrainerState, TrainerControl, Seq2SeqTrainer
+from transformers import AutoModelForSpeechSeq2Seq, WhisperForConditionalGeneration, TrainerCallback, TrainingArguments, TrainerState, TrainerControl, Seq2SeqTrainer, Seq2SeqTrainingArguments
 from preprocessing import load_and_process_data
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 
@@ -8,7 +8,6 @@ dataset_path = "tiny/data.csv"
 model_name_or_path = "openai/whisper-tiny"
 dataset_dict, processor, data_collator = load_and_process_data(dataset_path)
 model = AutoModelForSpeechSeq2Seq.from_pretrained(model_name_or_path)
-
 
 def print_trainable_params(model, label):
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -27,14 +26,14 @@ model = get_peft_model(model, config)
 print_trainable_params(full_ft_model, "Full fine-tuning")
 print_trainable_params(model, "PEFT (LoRA)")
 
-training_args = TrainingArguments(
+training_args = Seq2SeqTrainingArguments(
     output_dir="./results/whisper-tiny-romaji",
     per_device_train_batch_size=8,
     gradient_accumulation_steps=1,
     learning_rate=1e-3,
     warmup_steps=30,
     num_train_epochs=3,
-    evaluation_strategy="epoch",
+    eval_strategy="epoch",
     fp16=True,
     per_device_eval_batch_size=8,
     logging_steps=25,
@@ -66,7 +65,7 @@ trainer = Seq2SeqTrainer(
     train_dataset=dataset_dict["train"],
     eval_dataset=dataset_dict["validation"],
     data_collator=data_collator,
-    tokenizer=processor.tokenizer,
+    processing_class=processor.tokenizer,
     callbacks=[SavePeftModelCallback()],
 )
 model.config.use_cache = False
