@@ -5,11 +5,12 @@ from preprocessing import load_and_process_data
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
 import torch
 
-device = (
-    torch.device("mps") if torch.backends.mps.is_available()
-    else torch.device("cpu")
-)
-print("Using device:", device)
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    device = torch.device("mps")
+else:
+    device = torch.device("cpu")
 
 dataset_path = "tiny/data.csv"
 model_name_or_path = "openai/whisper-tiny"
