@@ -3,6 +3,13 @@ from peft import LoraConfig, get_peft_model
 from transformers import AutoModelForSpeechSeq2Seq, WhisperForConditionalGeneration, TrainerCallback, TrainingArguments, TrainerState, TrainerControl, Seq2SeqTrainer, Seq2SeqTrainingArguments
 from preprocessing import load_and_process_data
 from transformers.trainer_utils import PREFIX_CHECKPOINT_DIR
+import torch
+
+device = (
+    torch.device("mps") if torch.backends.mps.is_available()
+    else torch.device("cpu")
+)
+print("Using device:", device)
 
 dataset_path = "tiny/data.csv"
 model_name_or_path = "openai/whisper-tiny"
@@ -22,6 +29,7 @@ model.config.forced_decoder_ids = None
 model.config.suppress_tokens = []
 config = LoraConfig(r=32, lora_alpha=64, target_modules=["q_proj", "v_proj"], lora_dropout=0.05, bias="none")
 model = get_peft_model(model, config)
+model.to(device)
 
 print_trainable_params(full_ft_model, "Full fine-tuning")
 print_trainable_params(model, "PEFT (LoRA)")
