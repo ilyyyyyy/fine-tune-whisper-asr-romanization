@@ -78,3 +78,4 @@ trainer = Seq2SeqTrainer(
 )
 model.config.use_cache = False
 trainer.train()
+processor.save_pretrained("./results/whisper-tiny-romaji/processor")
