@@ -1,12 +1,4 @@
-#Install necessary libraries prior: pip install -q peft transformers datasets accelerate evaluate jiwer torchcodec
-
-model_name_or_path = "openai/whisper-tiny"
-language = "Japanese"
-language_abbr = "ja"
-task = "transcribe"
-dataset_name = "tiny/data.csv"
-
-"""Imports! """
+ #Install necessary libraries prior: pip install -q peft transformers datasets accelerate evaluate jiwer torchcodec
 from datasets import load_dataset, DatasetDict, Audio
 from transformers import AutoFeatureExtractor, AutoTokenizer, AutoProcessor
 from dataclasses import dataclass
@@ -44,7 +36,8 @@ def load_and_process_data(
     language: str = "Japanese",
     task: str = "transcribe",
     seed: int = 15,
-    num_proc: int = 2
+    num_proc: int = 2,
+    token: str = "HF_TOKEN_HERE"
 ):
     raw_dataset = load_dataset("csv", data_files=dataset_path)
     dataset = raw_dataset["train"].shuffle(seed=seed)
@@ -57,9 +50,9 @@ def load_and_process_data(
     })
     dataset_dict = dataset_dict.cast_column(audio_column, Audio())
 
-    feature_extractor = AutoFeatureExtractor.from_pretrained(model_name_or_path)
-    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, language=language, task=task)
-    processor = AutoProcessor.from_pretrained(model_name_or_path, language=language, task=task)
+    feature_extractor = AutoFeatureExtractor.from_pretrained(model_name_or_path, use_auth_token=token)
+    tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, language=language, task=task, use_auth_token=token)
+    processor = AutoProcessor.from_pretrained(model_name_or_path, language=language, task=task, use_auth_token=token)
 
     def prepare_dataset(batch):
         audio = batch[audio_column]
