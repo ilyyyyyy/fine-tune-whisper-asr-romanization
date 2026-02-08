@@ -45,7 +45,7 @@ def write_txts(df, col_name, process_func, output_dir):
             for line in filtered_df[col_name]:
                 f.write(process_func(str(line)) + '\n')
 
-write_txts(jp_df, 'japanese', tokenize_jp, 'mfa_data/tokenized_txts/')
+write_txts(jp_df, 'japanese', tokenize_jp, 'mfa_data/')
 write_txts(jp_df, 'japanese', normalize_jp, 'Xlarge/normalized_txts/')
 write_txts(romaji_df, 'romaji', normalize_romaji, 'Xlarge/romaji_txts/')
 
