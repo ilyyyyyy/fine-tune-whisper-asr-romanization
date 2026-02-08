@@ -2,6 +2,7 @@
 metadata.csv
 /output
 Xlarge/
+mfa_data/
 
 /environments
 .venv/
