@@ -1,7 +1,7 @@
 import subprocess
 import os
 mp3_dir = "Xlarge/mp3s"
-wav_dir = "Xlarge/wavs"
+wav_dir = "mfa_data"
 os.makedirs(wav_dir, exist_ok=True)
 
 for filename in os.listdir(mp3_dir):
