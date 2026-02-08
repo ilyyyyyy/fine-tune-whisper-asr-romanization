@@ -1,7 +1,7 @@
 /data
 metadata.csv
 /output
-tiny/
+Xlarge/
 
 /environments
 .venv/

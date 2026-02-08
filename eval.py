@@ -17,7 +17,7 @@ elif device.type == "mps":
 else:
     autocast = nullcontext()
 
-dataset_path = "tiny/data.csv"
+dataset_path = "Xlarge/data.csv"
 model_name_or_path = "openai/whisper-tiny"
 lora_adapter_path = "./results/whisper-tiny-romaji/checkpoint-93/adapter_model"
 

@@ -1,7 +1,7 @@
 import subprocess
 import os
-mp3_dir = "tiny/mp3s"
-wav_dir = "tiny/wavs"
+mp3_dir = "Xlarge/mp3s"
+wav_dir = "Xlarge/wavs"
 os.makedirs(wav_dir, exist_ok=True)
 
 for filename in os.listdir(mp3_dir):

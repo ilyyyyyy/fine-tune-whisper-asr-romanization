@@ -12,7 +12,7 @@ elif torch.backends.mps.is_available():
 else:
     device = torch.device("cpu")
 
-dataset_path = "tiny/data.csv"
+dataset_path = "Xlarge/data.csv"
 model_name_or_path = "openai/whisper-tiny"
 dataset_dict, processor, data_collator = load_and_process_data(dataset_path)
 model = AutoModelForSpeechSeq2Seq.from_pretrained(model_name_or_path)

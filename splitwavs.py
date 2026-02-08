@@ -1,10 +1,10 @@
 from pydub import AudioSegment
 import os
 
-textgrid_dir = "tiny/timestamps/"
-txt_dir = "tiny/normalized_txts/"
-wav_dir = "tiny/wavs/"
-slices_dir = "tiny/slices/"
+textgrid_dir = "Xlarge/timestamps/"
+txt_dir = "Xlarge/normalized_txts/"
+wav_dir = "Xlarge/wavs/"
+slices_dir = "Xlarge/slices/"
 os.makedirs(slices_dir, exist_ok=True)
 
 def get_timestamps(textgrid):

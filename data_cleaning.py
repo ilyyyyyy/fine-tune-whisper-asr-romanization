@@ -2,11 +2,11 @@ import pandas as pd
 import re
 import os
 
-folders = ('caucasusnohagetaka', 'gongitsune') #names of books
+#folders = ('caucasusnohagetaka', 'gongitsune') #names of books if using specific books
 
 df = pd.read_csv('metadata.csv')
-mask = df['wav_path'].str.contains('|'.join(folders))
-df = df[mask]
+#mask = df['wav_path'].str.contains('|'.join(folders))
+#df = df[mask]
 df.reset_index(drop=True, inplace=True)
 
 romaji_df = df.drop(columns=['mp3_path', 'ID1', 'ID2', 'japanese', 'audio_num'])
@@ -45,7 +45,7 @@ def write_txts(df, col_name, process_func, output_dir):
             for line in filtered_df[col_name]:
                 f.write(process_func(str(line)) + '\n')
 
-write_txts(jp_df, 'japanese', tokenize_jp, 'tiny/tokenized_txts_test/')
-write_txts(jp_df, 'japanese', normalize_jp, 'tiny/normalized_txts_test/')
-write_txts(romaji_df, 'romaji', normalize_romaji, 'tiny/romaji_txts_test/')
+write_txts(jp_df, 'japanese', tokenize_jp, 'Xlarge/tokenized_txts/')
+write_txts(jp_df, 'japanese', normalize_jp, 'Xlarge/normalized_txts/')
+write_txts(romaji_df, 'romaji', normalize_romaji, 'Xlarge/romaji_txts/')
 

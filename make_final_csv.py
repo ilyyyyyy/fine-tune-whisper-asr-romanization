@@ -2,9 +2,9 @@ import os
 import csv
 
 # Paths
-slices_dir = "tiny/slices"
-txt_dir = "tiny/romaji_txts"
-output_csv = "tiny/data.csv"
+slices_dir = "Xlarge/slices"
+txt_dir = "Xlarge/romaji_txts"
+output_csv = "Xlarge/data.csv"
 
 os.makedirs(os.path.dirname(output_csv), exist_ok=True)
 
