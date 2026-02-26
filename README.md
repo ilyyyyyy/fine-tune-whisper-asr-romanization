@@ -11,11 +11,21 @@ This project contains scripts to process the Kokoro speech dataset for Japanese 
 6. Run `splitwavs.py` to produce aligned wav slices in `tiny/slices/`.
 7. Run `make_final_csv.py` to produce `tiny/data.csv` for model training.
 ### Notes
-   - folder `mfa_data/` must be manually 
+   - folder `mfa_data/` must be manually created.
+     - `mfa_data/timestamps/` must be manually created.
    - Original Kokoro extract.py failed; mp3s had to be downloaded manually.
      - `tiny/mp3s/` must be manually populated with mp3 files. 
-   - MFA commands were run locally in Docker and are not saved.
-     - `tiny/timestamps/` must be manually populated with MFA TextGrids.
+### MFA commands
+`docker image pull mmcauliffe/montreal-forced-aligner:v2.2.17`  
+`docker run -it -v /Users/absolute/file/path/mfa_data:/data mmcauliffe/montreal-forced-aligner:v2.2.17`  
+`mfa model download --version 2.0.1a g2p japanese_mfa`  
+`mfa model download --version 2.0.1a acoustic japanese_mfa`  
+`mfa model download --version 2.0.1a dictionary japanese_mfa`  
+`mfa g2p /data /mfa/pretrained_models/g2p/japanese_mfa.zip /data/g2pped_oovs.txt --dictionary_path  /mfa/pretrained_models/dictionary/japanese_mfa.dict`  
+`mfa model add_words /mfa/pretrained_models/dictionary/japanese_mfa.dict /data/g2pped_oovs.txt`  
+delete g2pped_oovs.txt  
+`mfa validate /data /mfa/pretrained_models/dictionary/japanese_mfa.dict --acoustic_model_path /mfa/pretrained_models/acoustic/japanese_mfa.zip --temporary_directory /data/mfa_temp --output_directory /data/validate_output`  
+`mfa align /data /mfa/pretrained_models/dictionary/japanese_mfa.dict /mfa/pretrained_models/acoustic/japanese_mfa.zip /data/timestamps --temporary_directory /data/mfa_temp`
 
 ****
 ## Folder Structure
