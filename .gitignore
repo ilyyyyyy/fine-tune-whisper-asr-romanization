@@ -3,6 +3,7 @@ metadata.csv
 /output
 Xlarge/
 mfa_data/
+g2pped_oovs.txt
 
 /environments
 .venv/
