@@ -1,6 +1,7 @@
 # Fine-Tuning Whisper ASR for Romanization
 This project contains scripts to process the Kokoro speech dataset for Japanese romanization fine-tuning of ASR models.   
-**Currently, the repository contains all preprocessing steps; fine-tuning scripts will be added later.**
+**Currently, the repository contains all preprocessing steps; fine-tuning scripts will be added later.**  
+### For the month of February, I have unable to proceed with using MFA; finding a solution will likely take a while so progress on this will pause until I can resolve the issues with MFA.
 ****
 ## Pipeline
 1. Run `make_initial_csv.py` to generate the initial CSV from raw metadata.
